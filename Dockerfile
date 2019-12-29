@@ -1,18 +1,18 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
-ENV SUBSONIC_VERSION 6.1.3
+ENV SUBSONIC_VERSION 6.1.6
 ENV DEBIAN_FRONTEND noninteractive
 ENV HOME /root
 ENV PKG_CONFIG_PATH /usr/local/lib/pkgconfig
 ENV PATH $HOME/bin:$PATH
-ENV LC_ALL=ja_JP.UTF-8
+#ENV LC_ALL=ja_JP.UTF-8
 
-RUN apt-get -qq update && \
-    apt-get -y install \
+RUN apt -qq update && \
+    apt -y install \
     autoconf automake \
     locales language-pack-ja tzdata lame git \
     software-properties-common  lib32stdc++6 \
-    python-software-properties pkg-config cmake libass-dev libfreetype6-dev \
+    pkg-config cmake libass-dev libfreetype6-dev \
     libtheora-dev \
     libtool \
     libva-dev \
@@ -28,7 +28,7 @@ RUN apt-get -qq update && \
     zlib1g-dev \
     libfdk-aac-dev \
     yasm build-essential libtool libmp3lame-dev wget \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN locale-gen ja_JP.UTF-8 && dpkg-reconfigure locales && \
     echo "Asia/Tokyo" > /etc/timezone && dpkg-reconfigure tzdata
@@ -56,13 +56,11 @@ RUN cd ~/ffmpeg_sources && \
   make distclean && \
   hash -r
 
-RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
-    && DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:webupd8team/java -y  \
-    && apt-get update \
-    && apt-get -y install \
-    oracle-java8-installer \
-    oracle-java8-set-default \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/oracle-jdk8-installer
+RUN add-apt-repository ppa:linuxuprising/java \
+    && apt update \
+    && apt -y install openjdk-8-jdk \
+    && apt update \
+    && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN cd /tmp && \
     wget "https://s3-eu-west-1.amazonaws.com/subsonic-public/download/subsonic-${SUBSONIC_VERSION}.deb" && \
