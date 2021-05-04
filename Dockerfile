@@ -68,10 +68,12 @@ RUN cd /tmp && \
 
 EXPOSE 4040
 
+RUN mkdir -p /podcast /playlist /subsonic/transcode
+
 CMD export LANG=ja_JP.UTF-8 && \
   rm -rf /subsonic/transcode/ffmpeg && \
   rm -rf /subsonic/transcode/lame && \
-  ln -s /usr/local/bin/ffmpeg /subsonic/transcode/ffmpeg && \
+  ln -s /root/bin/ffmpeg /subsonic/transcode/ffmpeg && \
   ln -s /usr/bin/lame /subsonic/transcode/lame && \
   /usr/bin/subsonic \
   --home=/subsonic \
